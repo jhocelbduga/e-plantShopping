@@ -1,35 +1,53 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { removeItem, updateQuantity } from './CartSlice';
-import './CartItem.css';
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { removeItem, updateQuantity } from "../CartSlice";
+import { useNavigate } from "react-router-dom";
 
-const CartItem = ({ onContinueShopping }) => {
-  const cart = useSelector(state => state.cart.items);
+const CartItem = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // Calculate total amount for all products in the cart
-  const calculateTotalAmount = () => {
- 
-  };
+  // Access items from Redux store
+  const items = useSelector((state) => state.cart.items);
 
-  const handleContinueShopping = (e) => {
-   
-  };
+  // Calculate total cost for all items
+  const total = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
 
-
-
+  // Handle increment
   const handleIncrement = (item) => {
+    dispatch(
+      updateQuantity({
+        name: item.name,
+        amount: item.quantity + 1,
+      })
+    );
   };
 
+  // Handle decrement
   const handleDecrement = (item) => {
-   
+    if (item.quantity > 1) {
+      dispatch(
+        updateQuantity({
+          name: item.name,
+          amount: item.quantity - 1,
+        })
+      );
+    } else {
+      dispatch(removeItem(item.name));
+    }
   };
 
+  // Handle remove
   const handleRemove = (item) => {
+    dispatch(removeItem(item.name));
   };
 
-  // Calculate total cost based on quantity for an item
-  const calculateTotalCost = (item) => {
+  // Continue shopping button
+  const handleContinueShopping = () => {
+    navigate("/"); // Go back to product listing page
   };
 
   return (
