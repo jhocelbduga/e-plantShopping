@@ -1,18 +1,20 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeItem, updateQuantity } from "../CartSlice";
+import { removeItem, updateQuantity, addItem } from "../CartSlice";
 
-const CartItem = ({ onContinueShopping }) => {
+function CartItem({ onContinueShopping }) {
   const dispatch = useDispatch();
+
+  // Access items from Redux store
   const items = useSelector((state) => state.cart.items);
 
-  // ⭐ Calculate total cost of all items in the cart
+  // Calculate total cost of all items
   function calculateTotalAmount(cart) {
     let total = 0;
 
     cart.forEach((item) => {
       const quantity = item.quantity;
-      const costNumber = parseFloat(item.cost.substring(1)); 
+      const costNumber = parseFloat(item.cost.substring(1));
       total += costNumber * quantity;
     });
 
@@ -23,30 +25,34 @@ const CartItem = ({ onContinueShopping }) => {
 
   // Increment quantity
   const handleIncrement = (item) => {
-    dispatch(updateQuantity({
-      name: item.name,
-      quantity: item.quantity + 1
-    }));
+    dispatch(
+      updateQuantity({
+        name: item.name,
+        amount: item.quantity + 1,
+      })
+    );
   };
 
   // Decrement quantity
   const handleDecrement = (item) => {
     if (item.quantity > 1) {
-      dispatch(updateQuantity({
-        name: item.name,
-        quantity: item.quantity - 1
-      }));
+      dispatch(
+        updateQuantity({
+          name: item.name,
+          amount: item.quantity - 1,
+        })
+      );
     } else {
       dispatch(removeItem(item.name));
     }
   };
 
-  // Remove item entirely
+  // Remove item
   const handleRemove = (item) => {
     dispatch(removeItem(item.name));
   };
 
-  // Continue shopping
+  // Continue shopping (your merged code)
   const handleContinueShopping = (e) => {
     onContinueShopping(e);
   };
@@ -95,6 +101,6 @@ const CartItem = ({ onContinueShopping }) => {
       )}
     </div>
   );
-};
+}
 
 export default CartItem;
